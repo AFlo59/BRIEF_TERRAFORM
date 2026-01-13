@@ -32,12 +32,28 @@ fi
 
 echo -e "${CYAN}📋 Génération du plan Terraform...${NC}"
 
-docker run --rm -it \
-    -v "$WORK_DIR:/workspace" \
+# Charger les helpers
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/_helpers.sh" 2>/dev/null || true
+
+# Détecter le dossier .azure pour les credentials Azure CLI
+AZURE_VOLUME=$(get_azure_volume_mount)
+
+# Construire la commande Docker
+DOCKER_CMD="docker run --rm -it \
+    -v \"$WORK_DIR:/workspace\" \
     -v terraform-plugins-exercices:/root/.terraform.d/plugins \
-    -v terraform-cache-exercices:/root/.terraform.d \
-    -w /workspace \
-    terraform-exercices:latest plan
+    -v terraform-cache-exercices:/root/.terraform.d"
+
+# Ajouter le montage Azure si disponible
+if [ -n "$AZURE_VOLUME" ]; then
+    DOCKER_CMD="$DOCKER_CMD $AZURE_VOLUME"
+fi
+
+DOCKER_CMD="$DOCKER_CMD -w /workspace \
+    terraform-exercices:latest plan"
+
+eval $DOCKER_CMD
 
 exit_code=$?
 if [ $exit_code -eq 0 ]; then

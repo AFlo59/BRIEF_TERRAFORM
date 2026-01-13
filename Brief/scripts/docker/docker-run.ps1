@@ -22,6 +22,16 @@ if (-not $imageExists) {
     exit 1
 }
 
+# Charger les helpers PowerShell
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$HelpersPath = Join-Path (Split-Path -Parent $ScriptDir) "powershell\_helpers.ps1"
+if (Test-Path $HelpersPath) {
+    . $HelpersPath
+}
+
+# Détecter le dossier .azure pour les credentials Azure CLI
+$azureVolume = Get-AzureVolumeMount
+
 $workspacePath = (Resolve-Path $BriefDir).Path
 
 # Si aucune commande n'est fournie, lancer un shell interactif
@@ -29,20 +39,37 @@ if ($args.Count -eq 0) {
     Write-Host "🐳 Lancement du conteneur Docker en mode interactif..." -ForegroundColor Cyan
     Write-Host "💡 Vous êtes maintenant dans le conteneur. Tapez 'exit' pour quitter." -ForegroundColor Yellow
     Write-Host ""
-    docker run --rm -it `
-        --entrypoint /bin/bash `
-        -v "${workspacePath}:/workspace" `
-        -v terraform-plugins:/root/.terraform.d/plugins `
-        -v terraform-cache:/root/.terraform.d `
-        -w /workspace `
-        terraform-brief:latest
+
+    $dockerCmd = "docker run --rm -it `"
+        --entrypoint /bin/bash `"
+        -v `"${workspacePath}:/workspace`" `"
+        -v terraform-plugins:/root/.terraform.d/plugins `"
+        -v terraform-cache:/root/.terraform.d"
+
+    if ($azureVolume) {
+        $dockerCmd += " $azureVolume"
+    }
+
+    $dockerCmd += " `"
+        -w /workspace `"
+        terraform-brief:latest"
+
+    Invoke-Expression $dockerCmd
 } else {
     # Exécuter la commande fournie (avec terraform en préfixe si nécessaire)
-    docker run --rm -it `
-        -v "${workspacePath}:/workspace" `
-        -v terraform-plugins:/root/.terraform.d/plugins `
-        -v terraform-cache:/root/.terraform.d `
-        -w /workspace `
-        terraform-brief:latest `
-        $args
+    $dockerCmd = "docker run --rm -it `"
+        -v `"${workspacePath}:/workspace`" `"
+        -v terraform-plugins:/root/.terraform.d/plugins `"
+        -v terraform-cache:/root/.terraform.d"
+
+    if ($azureVolume) {
+        $dockerCmd += " $azureVolume"
+    }
+
+    $dockerCmd += " `"
+        -w /workspace `"
+        terraform-brief:latest `"
+        $($args -join ' ')"
+
+    Invoke-Expression $dockerCmd
 }

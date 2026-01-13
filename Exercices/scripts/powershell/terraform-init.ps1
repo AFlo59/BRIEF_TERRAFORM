@@ -29,14 +29,31 @@ if (-not $imageExists) {
 
 Write-Host "🚀 Initialisation de Terraform..." -ForegroundColor Cyan
 
+# Charger les helpers
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+. "$ScriptDir\_helpers.ps1"
+
+# Détecter le dossier .azure pour les credentials Azure CLI
+$azureVolume = Get-AzureVolumeMount
+
 $workspacePath = (Resolve-Path $WorkDir).Path
 
-docker run --rm -it `
-    -v "${workspacePath}:/workspace" `
-    -v terraform-plugins-exercices:/root/.terraform.d/plugins `
-    -v terraform-cache-exercices:/root/.terraform.d `
-    -w /workspace `
-    terraform-exercices:latest init
+# Construire la commande Docker
+$dockerCmd = "docker run --rm -it `"
+    -v `"${workspacePath}:/workspace`" `"
+    -v terraform-plugins-exercices:/root/.terraform.d/plugins `"
+    -v terraform-cache-exercices:/root/.terraform.d"
+
+# Ajouter le montage Azure si disponible
+if ($azureVolume) {
+    $dockerCmd += " $azureVolume"
+}
+
+$dockerCmd += " `"
+    -w /workspace `"
+    terraform-exercices:latest init"
+
+Invoke-Expression $dockerCmd
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Terraform initialisé avec succès" -ForegroundColor Green

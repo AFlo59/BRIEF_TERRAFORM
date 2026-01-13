@@ -37,14 +37,35 @@ if (-not $autoApprove) {
 
 Write-Host "🗑️  Destruction de l'infrastructure..." -ForegroundColor Cyan
 
+# Charger les helpers
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+. "$ScriptDir\_helpers.ps1"
+
+# Détecter le dossier .azure pour les credentials Azure CLI
+$azureVolume = Get-AzureVolumeMount
+
 $workspacePath = (Resolve-Path $BriefDir).Path
 
-docker run --rm -it `
-    -v "${workspacePath}:/workspace" `
-    -v terraform-plugins:/root/.terraform.d/plugins `
-    -v terraform-cache:/root/.terraform.d `
-    -w /workspace `
-    terraform-brief:latest destroy $terraformArgs
+# Construire la commande Docker
+$dockerCmd = "docker run --rm -it `"
+    -v `"${workspacePath}:/workspace`" `"
+    -v terraform-plugins:/root/.terraform.d/plugins `"
+    -v terraform-cache:/root/.terraform.d"
+
+# Ajouter le montage Azure si disponible
+if ($azureVolume) {
+    $dockerCmd += " $azureVolume"
+}
+
+$dockerCmd += " `"
+    -w /workspace `"
+    terraform-brief:latest destroy"
+
+if ($terraformArgs.Count -gt 0) {
+    $dockerCmd += " $($terraformArgs -join ' ')"
+}
+
+Invoke-Expression $dockerCmd
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Infrastructure détruite avec succès" -ForegroundColor Green

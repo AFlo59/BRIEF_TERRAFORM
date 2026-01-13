@@ -23,13 +23,30 @@ if (-not $imageExists) {
 
 Write-Host "📝 Formatage des fichiers Terraform..." -ForegroundColor Cyan
 
+# Charger les helpers
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+. "$ScriptDir\_helpers.ps1"
+
+# Détecter le dossier .azure pour les credentials Azure CLI
+$azureVolume = Get-AzureVolumeMount
+
 $workspacePath = (Resolve-Path $BriefDir).Path
 
-docker run --rm -it `
-    -v "${workspacePath}:/workspace" `
-    -v terraform-plugins:/root/.terraform.d/plugins `
-    -v terraform-cache:/root/.terraform.d `
-    -w /workspace `
-    terraform-brief:latest fmt
+# Construire la commande Docker
+$dockerCmd = "docker run --rm -it `"
+    -v `"${workspacePath}:/workspace`" `"
+    -v terraform-plugins:/root/.terraform.d/plugins `"
+    -v terraform-cache:/root/.terraform.d"
+
+# Ajouter le montage Azure si disponible
+if ($azureVolume) {
+    $dockerCmd += " $azureVolume"
+}
+
+$dockerCmd += " `"
+    -w /workspace `"
+    terraform-brief:latest fmt"
+
+Invoke-Expression $dockerCmd
 
 Write-Host "✅ Formatage terminé" -ForegroundColor Green

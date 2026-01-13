@@ -26,25 +26,48 @@ if ! docker images terraform-exercices:latest --format "{{.Repository}}:{{.Tag}}
     exit 1
 fi
 
+# Charger les helpers
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WSL_SCRIPTS_DIR="$(cd "$SCRIPT_DIR/../wsl" && pwd)"
+source "$WSL_SCRIPTS_DIR/_helpers.sh" 2>/dev/null || true
+
+# Détecter le dossier .azure pour les credentials Azure CLI
+AZURE_VOLUME=$(get_azure_volume_mount)
+
 # Si aucune commande n'est fournie, lancer un shell interactif
 if [ $# -eq 0 ]; then
     echo -e "${CYAN}🐳 Lancement du conteneur Docker en mode interactif...${NC}"
     echo -e "${YELLOW}💡 Vous êtes maintenant dans le conteneur. Tapez 'exit' pour quitter.${NC}"
     echo ""
-    docker run --rm -it \
+
+    DOCKER_CMD="docker run --rm -it \
         --entrypoint /bin/bash \
-        -v "$EXERCICES_DIR:/workspace" \
+        -v \"$EXERCICES_DIR:/workspace\" \
         -v terraform-plugins-exercices:/root/.terraform.d/plugins \
-        -v terraform-cache-exercices:/root/.terraform.d \
-        -w /workspace \
-        terraform-exercices:latest
+        -v terraform-cache-exercices:/root/.terraform.d"
+
+    if [ -n "$AZURE_VOLUME" ]; then
+        DOCKER_CMD="$DOCKER_CMD $AZURE_VOLUME"
+    fi
+
+    DOCKER_CMD="$DOCKER_CMD -w /workspace \
+        terraform-exercices:latest"
+
+    eval $DOCKER_CMD
 else
     # Exécuter la commande fournie (avec terraform en préfixe si nécessaire)
-    docker run --rm -it \
-        -v "$EXERCICES_DIR:/workspace" \
+    DOCKER_CMD="docker run --rm -it \
+        -v \"$EXERCICES_DIR:/workspace\" \
         -v terraform-plugins-exercices:/root/.terraform.d/plugins \
-        -v terraform-cache-exercices:/root/.terraform.d \
-        -w /workspace \
+        -v terraform-cache-exercices:/root/.terraform.d"
+
+    if [ -n "$AZURE_VOLUME" ]; then
+        DOCKER_CMD="$DOCKER_CMD $AZURE_VOLUME"
+    fi
+
+    DOCKER_CMD="$DOCKER_CMD -w /workspace \
         terraform-exercices:latest \
-        "$@"
+        \"$@\""
+
+    eval $DOCKER_CMD
 fi
