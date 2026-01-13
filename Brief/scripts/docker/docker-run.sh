@@ -49,7 +49,7 @@ if [ $# -eq 0 ]; then
         -v terraform-cache:/root/.terraform.d"
 
     if [ -n "$AZURE_DIR" ] && ([ -d "$AZURE_DIR" ] || [ -L "$AZURE_DIR" ]); then
-        DOCKER_CMD="$DOCKER_CMD -v \"$AZURE_DIR:/root/.azure:ro\""
+        DOCKER_CMD="$DOCKER_CMD -v \"$AZURE_DIR:/root/.azure\""
     fi
 
     DOCKER_CMD="$DOCKER_CMD -w /workspace \
@@ -64,7 +64,7 @@ else
         -v terraform-cache:/root/.terraform.d"
 
     if [ -n "$AZURE_DIR" ] && ([ -d "$AZURE_DIR" ] || [ -L "$AZURE_DIR" ]); then
-        DOCKER_CMD="$DOCKER_CMD -v \"$AZURE_DIR:/root/.azure:ro\""
+        DOCKER_CMD="$DOCKER_CMD -v \"$AZURE_DIR:/root/.azure\""
     fi
 
     DOCKER_CMD="$DOCKER_CMD -w /workspace \

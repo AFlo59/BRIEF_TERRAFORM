@@ -23,8 +23,9 @@ function Get-AzureVolumeMount {
     $azureDir = Get-AzureDir
 
     if ($azureDir -and (Test-Path $azureDir)) {
-        # Monter en lecture seule pour la sécurité
-        return "-v `"${azureDir}:/root/.azure:ro`""
+        # Monter en lecture-écriture (Azure CLI a besoin d'écrire des logs)
+        # Le conteneur est isolé et supprimé après utilisation (--rm), donc c'est sécurisé
+        return "-v `"${azureDir}:/root/.azure`""
     }
 
     return ""

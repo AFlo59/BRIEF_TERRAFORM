@@ -12,7 +12,7 @@ output "webapp_id" {
 
 output "webapp_url" {
   description = "URL de la Web App"
-  value       = "https://${azurerm_linux_web_app.main.default_host_name}"
+  value       = "https://${azurerm_linux_web_app.main.default_hostname}"
 }
 
 output "app_service_plan_id" {

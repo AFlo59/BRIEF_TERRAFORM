@@ -32,6 +32,11 @@ if (Test-Path $HelpersPath) {
 # Détecter le dossier .azure pour les credentials Azure CLI
 $azureVolume = Get-AzureVolumeMount
 
+# Retirer :ro si présent (Azure CLI a besoin d'écrire des logs)
+if ($azureVolume) {
+    $azureVolume = $azureVolume -replace ':ro', ''
+}
+
 $workspacePath = (Resolve-Path $ExercicesDir).Path
 
 # Si aucune commande n'est fournie, lancer un shell interactif

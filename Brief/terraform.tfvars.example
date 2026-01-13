@@ -3,7 +3,7 @@
 # ⚠️  Ne commitez JAMAIS terraform.tfvars s'il contient des secrets !
 
 # Configuration Azure
-location             = "West Europe"  # Doit correspondre à la location de RG_FABADI
+location             = "westeurope"  # Doit correspondre à la location de RG_FABADI (format: westeurope, pas "West Europe")
 resource_group_name  = "RG_FABADI"   # Resource Group existant
 
 # Tags

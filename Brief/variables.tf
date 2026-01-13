@@ -2,13 +2,13 @@
 
 # Variables Azure
 variable "location" {
-  description = "Région Azure pour déployer les ressources"
+  description = "Région Azure pour déployer les ressources (format: westeurope, northeurope, etc.)"
   type        = string
-  default     = "West Europe"
+  default     = "westeurope"
 
   validation {
     condition     = can(regex("^[a-z0-9-]+$", var.location))
-    error_message = "La location doit être une région Azure valide."
+    error_message = "La location doit être une région Azure valide au format lowercase (ex: westeurope, northeurope)."
   }
 }
 

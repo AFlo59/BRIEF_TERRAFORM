@@ -25,8 +25,9 @@ get_azure_volume_mount() {
     local azure_dir=$(get_azure_dir)
 
     if [ -n "$azure_dir" ] && ([ -d "$azure_dir" ] || [ -L "$azure_dir" ]); then
-        # Monter en lecture seule pour la sécurité
-        echo "-v \"$azure_dir:/root/.azure:ro\""
+        # Monter en lecture-écriture (Azure CLI a besoin d'écrire des logs)
+        # Le conteneur est isolé et supprimé après utilisation (--rm), donc c'est sécurisé
+        echo "-v \"$azure_dir:/root/.azure\""
     else
         # Si le dossier n'existe pas, retourner vide
         echo ""
