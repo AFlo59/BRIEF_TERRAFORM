@@ -1,6 +1,6 @@
 # Script pour détruire l'infrastructure Terraform via Docker (PowerShell)
-# Usage: .\scripts\terraform-destroy.ps1 [OPTIONS]
-# Exemple: .\scripts\terraform-destroy.ps1 -auto-approve
+# Usage: .\scripts\powershell\terraform-destroy.ps1 [OPTIONS]
+# Exemple: .\scripts\powershell\terraform-destroy.ps1 -auto-approve
 
 $ErrorActionPreference = "Stop"
 
@@ -11,6 +11,15 @@ Set-Location $BriefDir
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
     Write-Host "❌ Erreur: Docker n'est pas installé" -ForegroundColor Red
     exit 1
+}
+
+# Vérifier que l'image existe
+$imageExists = docker images terraform-brief:latest --format "{{.Repository}}:{{.Tag}}" | Select-String "terraform-brief:latest"
+if (-not $imageExists) {
+    Write-Host "⚠️  Image terraform-brief:latest non trouvée" -ForegroundColor Yellow
+    Write-Host "💡 Construction de l'image..." -ForegroundColor Cyan
+    & "$BriefDir\scripts\docker\docker-build.ps1"
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 # Vérifier si -auto-approve est dans les arguments
@@ -35,7 +44,7 @@ docker run --rm -it `
     -v terraform-plugins:/root/.terraform.d/plugins `
     -v terraform-cache:/root/.terraform.d `
     -w /workspace `
-    hashicorp/terraform:latest destroy $terraformArgs
+    terraform-brief:latest destroy $terraformArgs
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Infrastructure détruite avec succès" -ForegroundColor Green

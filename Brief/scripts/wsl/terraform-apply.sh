@@ -1,30 +1,38 @@
 #!/bin/bash
 # Script pour appliquer la configuration Terraform via Docker (WSL)
-# Usage: ./scripts/terraform-apply.sh [OPTIONS]
-# Exemple: ./scripts/terraform-apply.sh -auto-approve
+# Usage: ./scripts/wsl/terraform-apply.sh [OPTIONS]
+# Exemple: ./scripts/wsl/terraform-apply.sh -auto-approve
 
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
+YELLOW='\033[1;33m'
 NC='\033[0m'
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$SCRIPT_DIR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BRIEF_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$BRIEF_DIR"
 
 if ! command -v docker &> /dev/null; then
     echo -e "${RED}❌ Erreur: Docker n'est pas installé${NC}"
     exit 1
 fi
 
+# Vérifier que l'image existe
+if ! docker images terraform-brief:latest --format "{{.Repository}}:{{.Tag}}" | grep -q "terraform-brief:latest"; then
+    echo -e "${YELLOW}⚠️  Image terraform-brief:latest non trouvée${NC}"
+    echo -e "${CYAN}💡 Construction de l'image...${NC}"
+    "$BRIEF_DIR/scripts/docker/docker-build.sh" || exit 1
+fi
+
 echo -e "${CYAN}⚙️  Application de la configuration Terraform...${NC}"
 
-# Passer tous les arguments supplémentaires à terraform apply
 docker run --rm -it \
-    -v "$SCRIPT_DIR:/workspace" \
+    -v "$BRIEF_DIR:/workspace" \
     -v terraform-plugins:/root/.terraform.d/plugins \
     -v terraform-cache:/root/.terraform.d \
     -w /workspace \
-    hashicorp/terraform:latest apply "$@"
+    terraform-brief:latest apply "$@"
 
 exit_code=$?
 if [ $exit_code -eq 0 ]; then

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script pour détruire l'infrastructure Terraform via Docker (WSL)
-# Usage: ./scripts/terraform-destroy.sh [OPTIONS]
-# Exemple: ./scripts/terraform-destroy.sh -auto-approve
+# Usage: ./scripts/wsl/terraform-destroy.sh [OPTIONS]
+# Exemple: ./scripts/wsl/terraform-destroy.sh -auto-approve
 
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
@@ -9,12 +9,20 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$SCRIPT_DIR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BRIEF_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$BRIEF_DIR"
 
 if ! command -v docker &> /dev/null; then
     echo -e "${RED}❌ Erreur: Docker n'est pas installé${NC}"
     exit 1
+fi
+
+# Vérifier que l'image existe
+if ! docker images terraform-brief:latest --format "{{.Repository}}:{{.Tag}}" | grep -q "terraform-brief:latest"; then
+    echo -e "${YELLOW}⚠️  Image terraform-brief:latest non trouvée${NC}"
+    echo -e "${CYAN}💡 Construction de l'image...${NC}"
+    "$BRIEF_DIR/scripts/docker/docker-build.sh" || exit 1
 fi
 
 # Vérifier si -auto-approve est dans les arguments
@@ -30,11 +38,11 @@ fi
 echo -e "${CYAN}🗑️  Destruction de l'infrastructure...${NC}"
 
 docker run --rm -it \
-    -v "$SCRIPT_DIR:/workspace" \
+    -v "$BRIEF_DIR:/workspace" \
     -v terraform-plugins:/root/.terraform.d/plugins \
     -v terraform-cache:/root/.terraform.d \
     -w /workspace \
-    hashicorp/terraform:latest destroy "$@"
+    terraform-brief:latest destroy "$@"
 
 exit_code=$?
 if [ $exit_code -eq 0 ]; then

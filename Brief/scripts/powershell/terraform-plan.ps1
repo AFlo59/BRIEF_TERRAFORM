@@ -1,5 +1,5 @@
 # Script pour générer le plan Terraform via Docker (PowerShell)
-# Usage: .\scripts\terraform-plan.ps1
+# Usage: .\scripts\powershell\terraform-plan.ps1
 
 $ErrorActionPreference = "Stop"
 
@@ -12,6 +12,15 @@ if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
+# Vérifier que l'image existe
+$imageExists = docker images terraform-brief:latest --format "{{.Repository}}:{{.Tag}}" | Select-String "terraform-brief:latest"
+if (-not $imageExists) {
+    Write-Host "⚠️  Image terraform-brief:latest non trouvée" -ForegroundColor Yellow
+    Write-Host "💡 Construction de l'image..." -ForegroundColor Cyan
+    & "$BriefDir\scripts\docker\docker-build.ps1"
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
+
 Write-Host "📋 Génération du plan Terraform..." -ForegroundColor Cyan
 
 $workspacePath = (Resolve-Path $BriefDir).Path
@@ -21,7 +30,7 @@ docker run --rm -it `
     -v terraform-plugins:/root/.terraform.d/plugins `
     -v terraform-cache:/root/.terraform.d `
     -w /workspace `
-    hashicorp/terraform:latest plan
+    terraform-brief:latest plan
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Plan généré avec succès" -ForegroundColor Green

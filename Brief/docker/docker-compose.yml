@@ -1,0 +1,25 @@
+# Docker Compose pour le conteneur Terraform du Brief
+version: '3.8'
+
+services:
+  terraform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: terraform-brief:latest
+    container_name: terraform-brief
+    volumes:
+      - ../:/workspace
+      - terraform-plugins:/root/.terraform.d/plugins
+      - terraform-cache:/root/.terraform.d
+    working_dir: /workspace
+    environment:
+      - TF_IN_AUTOMATION=false
+      - TF_INPUT=true
+    stdin_open: true
+    tty: true
+    command: terraform version
+
+volumes:
+  terraform-plugins:
+  terraform-cache:

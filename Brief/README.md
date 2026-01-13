@@ -53,20 +53,17 @@ Brief/
 
 **Vous avez déjà un Resource Group `RG_FABADI` ?**
 
-👉 Consultez **[QUICK_CONFIG.md](./QUICK_CONFIG.md)** pour une configuration rapide en 3 étapes.
+👉 Consultez **[docs/CONFIGURATION_RG_EXISTANT.md](./docs/CONFIGURATION_RG_EXISTANT.md)** pour une configuration rapide.
 
 ### Guides Essentiels
 
-1. **[START_HERE.md](./START_HERE.md)** ⭐
-   - Guide de démarrage rapide
-   - Ce qu'il faut faire en premier
-
-2. **[docs/GUIDE_AZURE_SETUP.md](./docs/GUIDE_AZURE_SETUP.md)** 🔧
-   - **Configuration Azure manuelle** (ce que vous devez faire)
+1. **[docs/GUIDE_AZURE_SETUP.md](./docs/GUIDE_AZURE_SETUP.md)** 🔧 ⭐
+   - **Configuration Azure complète** (ce que vous devez faire)
    - Création de compte Azure
    - Configuration Azure CLI
    - Génération de clé SSH
    - Configuration terraform.tfvars
+   - **Guide principal pour démarrer**
 
 3. **[docs/GUIDE_PORTAL_AZURE.md](./docs/GUIDE_PORTAL_AZURE.md)** 🌐
    - **Guide étape par étape du portail Azure**
@@ -85,25 +82,10 @@ Brief/
    - Via Azure CLI
    - Via Terraform outputs
 
-### Documents de Planification
+### Documentation Complémentaire
 
-1. **[ANALYSE_BRIEF.md](./ANALYSE_BRIEF.md)**
-   - Analyse détaillée des exigences
-   - Ressources à créer
-   - Contraintes techniques
-
-2. **[PLAN_PROJET.md](./PLAN_PROJET.md)**
-   - Plan d'exécution étape par étape
-   - Phases de développement
-   - Estimation du temps
-
-3. **[STRUCTURE_PROJET.md](./STRUCTURE_PROJET.md)**
-   - Structure détaillée des fichiers
-   - Description de chaque module
-   - Relations entre modules
-
-4. **[CHECKLIST_DETAILLEE.md](./CHECKLIST_DETAILLEE.md)**
-   - Checklist complète
+1. **[docs/CHECKLIST_DETAILLEE.md](./docs/CHECKLIST_DETAILLEE.md)** ✅
+   - Checklist complète pour le livrable
    - Validation de tous les critères
    - Préparation du livrable
 
