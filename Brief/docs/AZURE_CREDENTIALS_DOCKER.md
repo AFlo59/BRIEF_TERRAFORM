@@ -22,10 +22,12 @@ Les scripts Terraform montent automatiquement le dossier `.azure` (qui contient 
    - WSL : `~/.azure` (lien symbolique vers Windows) ou `/mnt/c/Users/*/.azure`
    - PowerShell : `$env:USERPROFILE\.azure`
 
-2. **Montage en lecture seule** : Le dossier est monté en **lecture seule** (`:ro`) pour la sécurité
+2. **Montage en lecture-écriture** : Le dossier est monté en **lecture-écriture** pour permettre à Azure CLI d'écrire des logs et de mettre à jour le cache MSAL
    ```bash
-   -v "/mnt/c/Users/red59/.azure:/root/.azure:ro"
+   -v "/mnt/c/Users/red59/.azure:/root/.azure"
    ```
+
+   **Note** : Le conteneur est isolé et supprimé après chaque exécution (`--rm`), donc c'est sécurisé.
 
 3. **Transparent** : Vous n'avez rien à faire, c'est automatique !
 
@@ -97,9 +99,27 @@ Tous les scripts Terraform montent automatiquement le dossier `.azure` :
 
 ## 🔒 Sécurité
 
-- Le dossier `.azure` est monté en **lecture seule** (`:ro`)
 - Les credentials ne sont jamais copiés, seulement montés
-- Le conteneur est supprimé après chaque exécution (`--rm`)
+- Le conteneur est isolé et supprimé après chaque exécution (`--rm`)
+- Les modifications dans le conteneur ne persistent pas sur l'hôte
+
+## ⚠️ Problème : Cache MSAL
+
+Si vous rencontrez l'erreur :
+```
+ERROR: User '...' does not exist in MSAL token cache. Run `az login`.
+```
+
+**Solution** : Faites `az login` dans le conteneur Docker pour régénérer les tokens :
+
+```bash
+./scripts/docker/docker-run.sh
+# Dans le conteneur
+az login
+terraform plan
+```
+
+Voir le guide complet : [AZURE_TOKEN_CACHE.md](./AZURE_TOKEN_CACHE.md)
 
 ---
 

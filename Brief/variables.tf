@@ -2,9 +2,9 @@
 
 # Variables Azure
 variable "location" {
-  description = "Région Azure pour déployer les ressources (format: westeurope, northeurope, etc.)"
+  description = "Région Azure pour déployer les ressources (format: francecentral, westeurope, etc.)"
   type        = string
-  default     = "westeurope"
+  default     = "francecentral"
 
   validation {
     condition     = can(regex("^[a-z0-9-]+$", var.location))
@@ -15,7 +15,7 @@ variable "location" {
 variable "resource_group_name" {
   description = "Nom du Resource Group Azure existant"
   type        = string
-  default     = "RG_FABADI"  # Resource Group existant
+  default     = "fabadiRG"  # Resource Group existant
 
   # Si vous voulez créer un nouveau Resource Group, changez cette valeur
   # et décommentez le bloc resource dans main.tf

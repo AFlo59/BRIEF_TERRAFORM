@@ -3,8 +3,8 @@
 # ⚠️  Ne commitez JAMAIS terraform.tfvars s'il contient des secrets !
 
 # Configuration Azure
-location             = "westeurope"  # Doit correspondre à la location de RG_FABADI (format: westeurope, pas "West Europe")
-resource_group_name  = "RG_FABADI"   # Resource Group existant
+location             = "francecentral"  # Doit correspondre à la location de votre Resource Group existant
+resource_group_name  = "fabadiRG"   # Resource Group existant (remplacez par le vôtre)
 
 # Tags
 tags = {
@@ -19,10 +19,11 @@ vm_name         = "vm-terraform-brief"
 vm_size         = "Standard_B1s"  # 1 vCPU, 1 Go RAM
 vm_admin_username = "azureuser"
 
-# ⚠️  IMPORTANT: Remplacez par votre clé publique SSH
-# Générer avec: ssh-keygen -t rsa -b 4096
-# Puis copier le contenu de ~/.ssh/id_rsa.pub
-vm_ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQD... votre-clé-publique-ssh"
+# ⚠️  IMPORTANT: Remplacez par votre clé publique SSH RSA (Azure ne supporte PAS ed25519)
+# Générer avec: ssh-keygen -t rsa -b 4096 -C "azure-vm-key" -f ~/.ssh/id_rsa_azure
+# Puis copier le contenu de ~/.ssh/id_rsa_azure.pub
+# Format requis: doit commencer par "ssh-rsa" (pas "ssh-ed25519")
+vm_ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQD... votre-clé-rsa-complète"
 
 # Configuration Storage
 storage_account_name = "stterraformbrief"  # Doit être unique globalement (ajoutez des chiffres si nécessaire)

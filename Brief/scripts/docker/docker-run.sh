@@ -26,15 +26,13 @@ if ! docker images terraform-brief:latest --format "{{.Repository}}:{{.Tag}}" | 
     exit 1
 fi
 
+# Charger les helpers
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WSL_SCRIPTS_DIR="$(cd "$SCRIPT_DIR/../wsl" && pwd)"
+source "$WSL_SCRIPTS_DIR/_helpers.sh" 2>/dev/null || true
+
 # Détecter le dossier .azure pour les credentials Azure CLI
-AZURE_DIR=""
-if [ -L ~/.azure ]; then
-    AZURE_DIR=$(readlink -f ~/.azure)
-elif [ -d ~/.azure ]; then
-    AZURE_DIR=~/.azure
-elif [ -d /mnt/c/Users/*/.azure ]; then
-    AZURE_DIR=$(ls -d /mnt/c/Users/*/.azure 2>/dev/null | head -1)
-fi
+AZURE_VOLUME=$(get_azure_volume_mount)
 
 # Si aucune commande n'est fournie, lancer un shell interactif
 if [ $# -eq 0 ]; then
@@ -48,8 +46,8 @@ if [ $# -eq 0 ]; then
         -v terraform-plugins:/root/.terraform.d/plugins \
         -v terraform-cache:/root/.terraform.d"
 
-    if [ -n "$AZURE_DIR" ] && ([ -d "$AZURE_DIR" ] || [ -L "$AZURE_DIR" ]); then
-        DOCKER_CMD="$DOCKER_CMD -v \"$AZURE_DIR:/root/.azure\""
+    if [ -n "$AZURE_VOLUME" ]; then
+        DOCKER_CMD="$DOCKER_CMD $AZURE_VOLUME"
     fi
 
     DOCKER_CMD="$DOCKER_CMD -w /workspace \
@@ -63,8 +61,8 @@ else
         -v terraform-plugins:/root/.terraform.d/plugins \
         -v terraform-cache:/root/.terraform.d"
 
-    if [ -n "$AZURE_DIR" ] && ([ -d "$AZURE_DIR" ] || [ -L "$AZURE_DIR" ]); then
-        DOCKER_CMD="$DOCKER_CMD -v \"$AZURE_DIR:/root/.azure\""
+    if [ -n "$AZURE_VOLUME" ]; then
+        DOCKER_CMD="$DOCKER_CMD $AZURE_VOLUME"
     fi
 
     DOCKER_CMD="$DOCKER_CMD -w /workspace \

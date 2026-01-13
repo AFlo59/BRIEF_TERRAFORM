@@ -51,7 +51,7 @@ resource "azurerm_public_ip" "main" {
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
-  sku                 = "Basic"
+  sku                 = "Standard"  # Changé de Basic à Standard (Basic a une limite de 0 dans certains abonnements)
 
   tags = var.tags
 }
