@@ -1,0 +1,5 @@
+# Exemple de fichier de variables pour l'exercice 2
+# Copiez ce fichier vers terraform.tfvars et modifiez les valeurs
+
+file_name    = "mon_document.txt"
+file_content = "Ceci est le contenu de mon fichier créé avec Terraform !"

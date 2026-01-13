@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  terraform:
+    image: hashicorp/terraform:latest
+    container_name: terraform
+    working_dir: /workspace
+    volumes:
+      # Monter le répertoire Terraform actuel
+      - .:/workspace
+      # Persister les plugins Terraform pour éviter les téléchargements répétés
+      - terraform-plugins:/root/.terraform.d/plugins
+      # Persister le cache Terraform
+      - terraform-cache:/root/.terraform.d
+    environment:
+      # Variables d'environnement Terraform (ajuster selon vos besoins)
+      - TF_LOG=INFO
+      - TF_LOG_PATH=./terraform.log
+    # Commande par défaut (affiche l'aide)
+    command: version
+    # Réutiliser le réseau si nécessaire
+    networks:
+      - terraform-network
+
+volumes:
+  terraform-plugins:
+    driver: local
+  terraform-cache:
+    driver: local
+
+networks:
+  terraform-network:
+    driver: bridge

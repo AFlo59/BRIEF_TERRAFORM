@@ -1,0 +1,188 @@
+# =============================================================================
+# Terraform - Fichiers d'état et de configuration
+# =============================================================================
+
+# Fichiers d'état Terraform (contiennent des informations sensibles)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Lock file (peut être commité selon les pratiques, mais souvent ignoré)
+.terraform.lock.hcl
+
+# Dossier avec les providers téléchargés
+.terraform/
+.terraform.lock.hcl
+
+# Plans Terraform
+*.tfplan
+*.tfplan.json
+terraform.tfplan
+terraform.tfplan.json
+
+# Fichiers de crash
+crash.log
+crash.*.log
+
+# Fichiers override
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# =============================================================================
+# Terraform - Variables sensibles
+# =============================================================================
+
+# Fichiers de variables (contiennent des secrets)
+*.tfvars
+!terraform.tfvars.example
+!*.tfvars.example
+terraform.tfvars
+secrets.tfvars
+*.auto.tfvars
+*.auto.tfvars.json
+
+# =============================================================================
+# Azure - Credentials et secrets
+# =============================================================================
+
+# Clés SSH privées
+*.pem
+*.key
+*.ppk
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+*.pem
+*.key
+
+# Fichiers de credentials Azure
+.azure/
+azure-credentials.json
+azure-profile.json
+
+# =============================================================================
+# Logs et fichiers temporaires
+# =============================================================================
+
+# Logs Terraform
+*.log
+terraform.log
+*.log.*
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.bak
+*.backup
+*.swp
+*.swo
+*~
+
+# =============================================================================
+# OS - Fichiers système
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+__MACOSX/
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+
+# =============================================================================
+# IDE et éditeurs
+# =============================================================================
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ IDEA / PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*.swn
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# =============================================================================
+# Docker (si utilisé pour Terraform)
+# =============================================================================
+
+# Fichiers Docker temporaires
+.dockerignore
+docker-compose.override.yml
+
+# =============================================================================
+# Autres fichiers sensibles
+# =============================================================================
+
+# Fichiers de configuration locale
+.env
+.env.local
+.env.*.local
+local.tf
+local.tfvars
+
+# Fichiers de backup
+*.backup
+*.bak
+*.old
+
+# Archives (si vous créez des ZIP pour livrables)
+*.zip
+*.tar.gz
+*.rar
+!livrable.zip  # Exemple : garder un livrable spécifique si nécessaire
+
+# =============================================================================
+# Notes
+# =============================================================================
+#
+# Ce .gitignore exclut :
+# - Tous les fichiers d'état Terraform (*.tfstate)
+# - Tous les fichiers de variables sensibles (*.tfvars sauf les exemples)
+# - Les credentials Azure et clés SSH
+# - Les fichiers temporaires et logs
+# - Les fichiers système OS
+#
+# À COMMITER :
+# - *.tf (fichiers Terraform)
+# - terraform.tfvars.example (exemple de variables)
+# - README.md et documentation
+# - Modules Terraform
+#
+# À NE JAMAIS COMMITER :
+# - terraform.tfvars (contient vos secrets)
+# - *.tfstate (contient l'état de l'infrastructure)
+# - Clés SSH privées
+# - Credentials Azure

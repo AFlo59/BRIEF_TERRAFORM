@@ -1,0 +1,33 @@
+# Exemple de fichier de variables Terraform
+# Copiez ce fichier vers terraform.tfvars et remplissez vos valeurs
+# ⚠️  Ne commitez JAMAIS terraform.tfvars s'il contient des secrets !
+
+# Configuration Azure
+location             = "West Europe"  # Doit correspondre à la location de RG_FABADI
+resource_group_name  = "RG_FABADI"   # Resource Group existant
+
+# Tags
+tags = {
+  Environment = "dev"
+  Project     = "terraform-brief"
+  ManagedBy   = "terraform"
+  Student     = "VotreNom"
+}
+
+# Configuration VM
+vm_name         = "vm-terraform-brief"
+vm_size         = "Standard_B1s"  # 1 vCPU, 1 Go RAM
+vm_admin_username = "azureuser"
+
+# ⚠️  IMPORTANT: Remplacez par votre clé publique SSH
+# Générer avec: ssh-keygen -t rsa -b 4096
+# Puis copier le contenu de ~/.ssh/id_rsa.pub
+vm_ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQD... votre-clé-publique-ssh"
+
+# Configuration Storage
+storage_account_name = "stterraformbrief"  # Doit être unique globalement (ajoutez des chiffres si nécessaire)
+container_name       = "data-container"
+
+# Configuration Web App
+webapp_name = "webapp-terraform-brief"  # Doit être unique globalement (ajoutez des chiffres si nécessaire)
+webapp_sku  = "F1"  # Free tier (ou "B1" pour Basic ~$13/mois)

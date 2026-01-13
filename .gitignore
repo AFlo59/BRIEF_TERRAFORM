@@ -1,0 +1,92 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Spark / Delta
+checkpoints/
+delta/
+*.parquet
+*.delta
+
+# Données volumineuses (checkpoints et delta)
+**/checkpoints/
+**/delta/
+**/input/*.json
+
+# macOS
+__MACOSX/
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+logs/
+*.out
+
+# Environnement
+.env
+.env.local
+.env.*.local
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+.terraform.lock.hcl
+terraform.tfplan
+terraform.tfplan.json
+*.tfplan
+*.tfplan.json
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# Variables sensibles
+terraform.tfvars
+*.tfvars
+!*.tfvars.example
+*.auto.tfvars
+*.auto.tfvars.json
+secrets.tfvars
+# Clés SSH et credentials Azure
+*.pem
+*.key
+*.ppk
+id_rsa
+id_ed25519
+.azure/
+azure-credentials.json
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
