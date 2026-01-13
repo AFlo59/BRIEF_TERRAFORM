@@ -1,0 +1,11 @@
+# Fichiers à ignorer lors du build Docker
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+terraform.tfvars
+*.log
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc

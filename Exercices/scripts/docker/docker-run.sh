@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script pour lancer le conteneur Docker Terraform en mode interactif
+# Script pour lancer le conteneur Docker Terraform en mode interactif - Exercices
 # Usage: ./scripts/docker/docker-run.sh [command]
 #
 # Sans argument: Lance un shell bash interactif dans le conteneur
@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BRIEF_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+EXERCICES_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 if ! command -v docker &> /dev/null; then
     echo -e "${RED}❌ Erreur: Docker n'est pas installé${NC}"
@@ -20,8 +20,8 @@ if ! command -v docker &> /dev/null; then
 fi
 
 # Vérifier que l'image existe
-if ! docker images terraform-brief:latest --format "{{.Repository}}:{{.Tag}}" | grep -q "terraform-brief:latest"; then
-    echo -e "${RED}❌ Image terraform-brief:latest non trouvée${NC}"
+if ! docker images terraform-exercices:latest --format "{{.Repository}}:{{.Tag}}" | grep -q "terraform-exercices:latest"; then
+    echo -e "${RED}❌ Image terraform-exercices:latest non trouvée${NC}"
     echo -e "${CYAN}💡 Construisez l'image d'abord: ./scripts/docker/docker-build.sh${NC}"
     exit 1
 fi
@@ -32,19 +32,19 @@ if [ $# -eq 0 ]; then
     echo -e "${YELLOW}💡 Vous êtes maintenant dans le conteneur. Tapez 'exit' pour quitter.${NC}"
     echo ""
     docker run --rm -it \
-        -v "$BRIEF_DIR:/workspace" \
-        -v terraform-plugins:/root/.terraform.d/plugins \
-        -v terraform-cache:/root/.terraform.d \
+        -v "$EXERCICES_DIR:/workspace" \
+        -v terraform-plugins-exercices:/root/.terraform.d/plugins \
+        -v terraform-cache-exercices:/root/.terraform.d \
         -w /workspace \
-        terraform-brief:latest \
+        terraform-exercices:latest \
         bash
 else
     # Exécuter la commande fournie
     docker run --rm -it \
-        -v "$BRIEF_DIR:/workspace" \
-        -v terraform-plugins:/root/.terraform.d/plugins \
-        -v terraform-cache:/root/.terraform.d \
+        -v "$EXERCICES_DIR:/workspace" \
+        -v terraform-plugins-exercices:/root/.terraform.d/plugins \
+        -v terraform-cache-exercices:/root/.terraform.d \
         -w /workspace \
-        terraform-brief:latest \
+        terraform-exercices:latest \
         "$@"
 fi

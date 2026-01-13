@@ -1,6 +1,6 @@
-# 🐳 Scripts Docker - Gestion du Conteneur Terraform
+# 🐳 Scripts Docker - Gestion du Conteneur Terraform - Exercices
 
-Scripts pour gérer le conteneur Docker Terraform du Brief.
+Scripts pour gérer le conteneur Docker Terraform pour les exercices.
 
 ---
 
@@ -8,14 +8,14 @@ Scripts pour gérer le conteneur Docker Terraform du Brief.
 
 ### Scripts Bash (WSL)
 - `docker-build.sh` - Construire l'image Docker
-- `docker-run.sh` - Exécuter une commande dans le conteneur
+- `docker-run.sh` - Lancer le conteneur en mode interactif
 - `docker-update.sh` - Reconstruire l'image (mise à jour)
 - `docker-remove.sh` - Supprimer l'image
 - `docker-status.sh` - Vérifier le statut de l'image
 
 ### Scripts PowerShell (Windows)
 - `docker-build.ps1` - Construire l'image Docker
-- `docker-run.ps1` - Exécuter une commande dans le conteneur
+- `docker-run.ps1` - Lancer le conteneur en mode interactif
 - `docker-update.ps1` - Reconstruire l'image (mise à jour)
 - `docker-remove.ps1` - Supprimer l'image
 - `docker-status.ps1` - Vérifier le statut de l'image
@@ -62,7 +62,7 @@ Scripts pour gérer le conteneur Docker Terraform du Brief.
 
 # WSL - Exécuter une commande spécifique
 ./scripts/docker/docker-run.sh terraform version
-./scripts/docker/docker-run.sh az --version
+./scripts/docker/docker-run.sh terraform --help
 
 # PowerShell - Lance un shell bash dans le conteneur
 .\scripts\docker\docker-run.ps1
@@ -90,14 +90,17 @@ Scripts pour gérer le conteneur Docker Terraform du Brief.
 
 ## 📋 Image Docker
 
-**Nom** : `terraform-brief:latest`
+**Nom** : `terraform-exercices:latest`
 
 **Contenu** :
 - Terraform (dernière version)
-- Azure CLI (via pip)
 - Outils utiles (git, jq, ssh, bash)
 
-**Dockerfile** : `Brief/docker/Dockerfile`
+**Dockerfile** : `Exercices/docker/Dockerfile`
+
+**Volumes Docker** :
+- `terraform-plugins-exercices` - Plugins Terraform
+- `terraform-cache-exercices` - Cache Terraform
 
 ---
 
@@ -107,7 +110,7 @@ Scripts pour gérer le conteneur Docker Terraform du Brief.
 - **Pour les commandes Terraform**, utilisez les scripts dédiés dans `wsl/` ou `powershell/`
 - Les scripts Terraform construisent automatiquement l'image si elle n'existe pas
 - L'image est partagée entre tous les scripts Terraform
-- Les volumes Docker sont persistants (`terraform-plugins`, `terraform-cache`)
+- Les volumes Docker sont persistants et séparés de ceux du projet Brief
 
 ---
 
@@ -123,4 +126,4 @@ Scripts pour gérer le conteneur Docker Terraform du Brief.
 
 ---
 
-*Scripts de gestion Docker pour le projet Brief*
+*Scripts de gestion Docker pour les exercices Terraform*

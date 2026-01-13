@@ -1,4 +1,4 @@
-# Script pour lancer le conteneur Docker Terraform en mode interactif
+# Script pour lancer le conteneur Docker Terraform en mode interactif - Exercices
 # Usage: .\scripts\docker\docker-run.ps1 [command]
 #
 # Sans argument: Lance un shell bash interactif dans le conteneur
@@ -7,7 +7,7 @@
 $ErrorActionPreference = "Stop"
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$BriefDir = Split-Path -Parent (Split-Path -Parent $ScriptDir)
+$ExercicesDir = Split-Path -Parent (Split-Path -Parent $ScriptDir)
 
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
     Write-Host "❌ Erreur: Docker n'est pas installé" -ForegroundColor Red
@@ -15,14 +15,14 @@ if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
 }
 
 # Vérifier que l'image existe
-$imageExists = docker images terraform-brief:latest --format "{{.Repository}}:{{.Tag}}" | Select-String "terraform-brief:latest"
+$imageExists = docker images terraform-exercices:latest --format "{{.Repository}}:{{.Tag}}" | Select-String "terraform-exercices:latest"
 if (-not $imageExists) {
-    Write-Host "❌ Image terraform-brief:latest non trouvée" -ForegroundColor Red
+    Write-Host "❌ Image terraform-exercices:latest non trouvée" -ForegroundColor Red
     Write-Host "💡 Construisez l'image d'abord: .\scripts\docker\docker-build.ps1" -ForegroundColor Cyan
     exit 1
 }
 
-$workspacePath = (Resolve-Path $BriefDir).Path
+$workspacePath = (Resolve-Path $ExercicesDir).Path
 
 # Si aucune commande n'est fournie, lancer un shell interactif
 if ($args.Count -eq 0) {
@@ -31,18 +31,18 @@ if ($args.Count -eq 0) {
     Write-Host ""
     docker run --rm -it `
         -v "${workspacePath}:/workspace" `
-        -v terraform-plugins:/root/.terraform.d/plugins `
-        -v terraform-cache:/root/.terraform.d `
+        -v terraform-plugins-exercices:/root/.terraform.d/plugins `
+        -v terraform-cache-exercices:/root/.terraform.d `
         -w /workspace `
-        terraform-brief:latest `
+        terraform-exercices:latest `
         bash
 } else {
     # Exécuter la commande fournie
     docker run --rm -it `
         -v "${workspacePath}:/workspace" `
-        -v terraform-plugins:/root/.terraform.d/plugins `
-        -v terraform-cache:/root/.terraform.d `
+        -v terraform-plugins-exercices:/root/.terraform.d/plugins `
+        -v terraform-cache-exercices:/root/.terraform.d `
         -w /workspace `
-        terraform-brief:latest `
+        terraform-exercices:latest `
         $args
 }

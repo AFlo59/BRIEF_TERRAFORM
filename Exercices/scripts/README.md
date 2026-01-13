@@ -1,10 +1,10 @@
-# 🚀 Scripts Terraform pour le Projet Brief
+# 🚀 Scripts Terraform pour les Exercices
 
-Scripts pour exécuter Terraform via Docker depuis WSL ou PowerShell.
+Scripts pour exécuter Terraform via Docker depuis WSL ou PowerShell pour les exercices Terraform.
 
 ---
 
-## 📁 Structure des Scripts
+## 📁 Structure
 
 ```
 scripts/
@@ -54,7 +54,10 @@ scripts/
 - `terraform-init.sh` - Exécute `terraform init` dans Docker
 - `terraform-plan.sh` - Exécute `terraform plan` dans Docker
 - `terraform-apply.sh` - Exécute `terraform apply` dans Docker
-- etc.
+- `terraform-destroy.sh` - Exécute `terraform destroy` dans Docker
+- `terraform-validate.sh` - Exécute `terraform validate` dans Docker
+- `terraform-fmt.sh` - Exécute `terraform fmt` dans Docker
+- `terraform-version.sh` - Exécute `terraform version` dans Docker
 
 ---
 
@@ -63,17 +66,37 @@ scripts/
 ### Pour les Commandes Terraform (Recommandé)
 
 ```bash
-# WSL
+# WSL - Depuis le dossier Exercices
+cd /mnt/d/PROJETS/BRIEF_TERRAFORM/Exercices
 ./scripts/wsl/terraform-init.sh
 ./scripts/wsl/terraform-plan.sh
 ./scripts/wsl/terraform-apply.sh
+
+# WSL - Depuis un exercice spécifique
+cd /mnt/d/PROJETS/BRIEF_TERRAFORM/Exercices/exercice_1
+../scripts/wsl/terraform-init.sh exercice_1
 ```
 
 ```powershell
-# PowerShell
+# PowerShell - Depuis le dossier Exercices
+cd D:\PROJETS\BRIEF_TERRAFORM\Exercices
 .\scripts\powershell\terraform-init.ps1
 .\scripts\powershell\terraform-plan.ps1
 .\scripts\powershell\terraform-apply.ps1
+```
+
+### Utiliser les Scripts run.sh/run.ps1 dans Chaque Exercice
+
+```bash
+# WSL - Depuis un exercice
+cd /mnt/d/PROJETS/BRIEF_TERRAFORM/Exercices/exercice_1
+./run.sh
+```
+
+```powershell
+# PowerShell - Depuis un exercice
+cd D:\PROJETS\BRIEF_TERRAFORM\Exercices\exercice_1
+.\run.ps1
 ```
 
 ### Pour Lancer le Conteneur Interactif
@@ -86,7 +109,6 @@ scripts/
 terraform version
 terraform init
 terraform plan
-az --version
 # etc.
 ```
 
@@ -106,9 +128,9 @@ az --version
 
 ### 2. Utiliser les scripts Terraform
 ```bash
-./scripts/wsl/terraform-init.sh
-./scripts/wsl/terraform-plan.sh
-./scripts/wsl/terraform-apply.sh
+# Depuis un exercice
+cd exercice_1
+./run.sh
 ```
 
 ### 3. (Optionnel) Lancer le conteneur interactif
@@ -127,12 +149,22 @@ terraform --help
    - Vérifient que l'image Docker existe
    - Construisent l'image si nécessaire
    - Exécutent `docker run` avec la commande Terraform spécifique
-   - Exemple : `docker run ... terraform-brief:latest init`
+   - Exemple : `docker run ... terraform-exercices:latest init`
 
 2. **Script Docker Run** (`docker-run.sh`) :
    - Lance le conteneur en mode interactif
    - Ouvre un shell bash dans le conteneur
    - Permet d'exécuter n'importe quelle commande manuellement
+
+---
+
+## 📋 Image Docker
+
+**Nom** : `terraform-exercices:latest`
+
+**Volumes Docker** :
+- `terraform-plugins-exercices` - Plugins Terraform
+- `terraform-cache-exercices` - Cache Terraform
 
 ---
 
@@ -147,4 +179,4 @@ terraform --help
 
 ---
 
-*Scripts organisés pour faciliter l'utilisation de Terraform avec Docker*
+*Scripts organisés pour faciliter l'utilisation de Terraform avec Docker pour les exercices*

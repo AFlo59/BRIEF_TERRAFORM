@@ -1,181 +1,168 @@
-# Projet BRIEF_TERRAFORM
+# 🚀 Projet BRIEF_TERRAFORM
 
-Projet de streaming de données de capteurs IoT avec Apache Spark, Delta Lake et Kafka.
+Projet d'apprentissage et de déploiement d'infrastructure avec Terraform.
+
+---
 
 ## 📋 Vue d'ensemble
 
-Ce projet contient:
-- **Infrastructure as Code** avec Terraform
-- **Application de streaming** SmartTech pour le traitement de données de capteurs en temps réel
+Ce projet contient :
+- **Brief Azure** - Déploiement d'infrastructure Azure avec Terraform
+- **Exercices Terraform** - Exercices locaux pour apprendre Terraform
+- **Application de streaming** SmartTech pour le traitement de données de capteurs
 - **Documentation** et ressources d'apprentissage
+
+---
 
 ## 🗂️ Structure du Projet
 
-> ⚠️ **Note**: Ce projet est en cours de restructuration pour optimiser son organisation.
-> Consultez les documents d'analyse pour plus de détails.
-
-### Structure Actuelle
-
 ```
 BRIEF_TERRAFORM/
-├── docs/                    # Documentation
-├── infrastructure/          # Infrastructure as Code (Terraform)
-├── smarttech-streaming/     # Application de streaming
-├── sensor_data/             # Données de capteurs (à réorganiser)
-└── scripts/                 # Scripts utilitaires
+├── Brief/                    # Projet Brief Azure (infrastructure complète)
+│   ├── docker/               # Configuration Docker pour Brief
+│   ├── scripts/              # Scripts Terraform (wsl/powershell)
+│   ├── modules/              # Modules Terraform (vm, storage, webapp)
+│   └── docs/                 # Documentation du Brief
+│
+├── Exercices/                 # Exercices Terraform locaux
+│   ├── docker/               # Configuration Docker pour exercices
+│   ├── scripts/              # Scripts Terraform (wsl/powershell)
+│   ├── docs/                 # Documentation des exercices
+│   └── exercice_*/           # Exercices individuels (1-4)
+│
+├── docs/                     # Documentation générale
+│   └── terraform/            # Guides Terraform généraux
+│
+├── IaC-Provisionning(Terraform)/  # PDFs d'apprentissage
+├── sensor_data/              # Données de capteurs
+└── smarttech-streaming/      # Application de streaming
 ```
 
-## 🛠️ IDE et Extensions
+---
 
-Pour une meilleure expérience de développement avec Terraform :
+## 🎯 Projets Disponibles
 
-- **VS Code** : Installez l'extension [HashiCorp Terraform](https://marketplace.visualstudio.com/items?itemName=hashicorp.terraform)
-- **Configuration** : Le projet inclut déjà `.vscode/settings.json` pour VS Code
-- **Documentation complète** : Voir [docs/terraform/IDE_EXTENSIONS.md](./docs/terraform/IDE_EXTENSIONS.md)
+### 1. Brief Azure (`Brief/`)
 
-### Fonctionnalités IDE
+Déploiement d'infrastructure Azure complète :
+- Machine Virtuelle Linux
+- Azure Storage Account + Blob Container
+- Web App Azure
 
-✅ Syntax highlighting
-✅ Auto-completion
-✅ Format on save
-✅ Linting et validation
-✅ IntelliSense
+**Documentation** : [Brief/README.md](./Brief/README.md)
+
+**Démarrage rapide** :
+```bash
+cd Brief
+./scripts/wsl/terraform-init.sh
+./scripts/wsl/terraform-plan.sh
+```
+
+---
+
+### 2. Exercices Terraform (`Exercices/`)
+
+4 exercices locaux pour apprendre Terraform :
+1. Créer un fichier local
+2. Utiliser des variables
+3. Télécharger un fichier via HTTP
+4. Générer des mots de passe aléatoires
+
+**Documentation** : [Exercices/README.md](./Exercices/README.md)
+
+**Démarrage rapide** :
+```bash
+cd Exercices/exercice_1
+./run.sh init
+./run.sh apply
+```
+
+---
+
+## 🐳 Docker
+
+Les deux projets utilisent Docker pour exécuter Terraform sans installation locale.
+
+### Brief Azure
+- **Image** : `terraform-brief:latest`
+- **Build** : `Brief/scripts/docker/docker-build.sh`
+
+### Exercices
+- **Image** : `terraform-exercices:latest`
+- **Build** : `Exercices/scripts/docker/docker-build.sh`
+
+---
+
+## 🛠️ Prérequis
+
+- **Docker** installé et en cours d'exécution
+- **WSL** (pour les scripts bash) ou **PowerShell** (pour les scripts .ps1)
+- **Azure CLI** (pour le Brief Azure uniquement)
 
 ---
 
 ## 📚 Documentation
 
-### Documents d'Analyse et Migration
+### Brief Azure
+- [Guide de configuration Azure](./Brief/docs/GUIDE_AZURE_SETUP.md)
+- [Guide portail Azure](./Brief/docs/GUIDE_PORTAL_AZURE.md)
+- [Procédure de déploiement](./Brief/docs/DEPLOYMENT.md)
 
-1. **[ANALYSE_STRUCTURE_PROJET.md](./ANALYSE_STRUCTURE_PROJET.md)**
-   - Analyse détaillée des problèmes de structure actuels
-   - Proposition de structure optimisée
-   - Avantages et recommandations
+### Exercices
+- [Documentation des exercices](./Exercices/docs/)
+- [Guide Docker](./docs/terraform/GUIDE_DOCKER.md)
 
-2. **[STRUCTURE_VISUELLE.md](./STRUCTURE_VISUELLE.md)**
-   - Comparaison visuelle avant/après
-   - Mapping des fichiers
-   - Métriques d'amélioration
-
-3. **[PLAN_MIGRATION.md](./PLAN_MIGRATION.md)**
-   - Plan d'exécution détaillé par phases
-   - Checklist de validation
-   - Points d'attention
-
-### Migration Automatisée
-
-Un script PowerShell est disponible pour automatiser la migration:
-
-```powershell
-# Mode dry-run (simulation)
-.\scripts\migrate_structure.ps1 -DryRun
-
-# Exécution réelle
-.\scripts\migrate_structure.ps1
-```
-
-## 🚀 Démarrage Rapide
-
-### Prérequis
-
-- **Docker** et Docker Compose (pour Terraform et services)
-- Python 3.11+ (pour le projet streaming)
-- Apache Spark 4.0+
-- Delta Lake
-- Kafka
-
-### Infrastructure avec Terraform (via Docker)
-
-Terraform est utilisé via Docker - **aucune installation locale nécessaire** !
-
-```powershell
-# Initialiser Terraform
-.\scripts\terraform.ps1 init
-
-# Générer un plan
-.\scripts\terraform.ps1 plan
-
-# Appliquer la configuration
-.\scripts\terraform.ps1 apply
-```
-
-📚 **Voir la documentation complète**: [infrastructure/terraform/README.md](./infrastructure/terraform/README.md)
-📖 **Guide détaillé Docker**: [docs/terraform/GUIDE_DOCKER.md](./docs/terraform/GUIDE_DOCKER.md)
-
-### Application de Streaming
-
-1. **Installer les dépendances Python**:
-   ```bash
-   cd smarttech-streaming
-   uv sync
-   ```
-
-2. **Démarrer les services** (Kafka, Zookeeper):
-   ```bash
-   docker-compose up -d
-   ```
-
-3. **Lancer les streams**:
-   ```bash
-   # Stream Bronze (fichiers -> Delta)
-   python src/streams/bronze_stream.py
-
-   # Stream Silver (Kafka -> Delta)
-   python src/streams/silver_stream.py
-   ```
-
-## 📊 Structure Optimisée (Recommandée)
-
-La structure optimisée suit les meilleures pratiques Python et sépare clairement:
-- **Code source** (`src/`) - Modules organisés
-- **Données** (`data/`) - Organisées par type (raw, processed, checkpoints)
-- **Notebooks** (`notebooks/`) - Séparés du code de production
-- **Tests** (`tests/`) - Tests isolés
-- **Configuration** (`config/`) - Configuration centralisée
-
-Voir [STRUCTURE_VISUELLE.md](./STRUCTURE_VISUELLE.md) pour plus de détails.
-
-## 🔧 Technologies Utilisées
-
-### Infrastructure
-- **Terraform**: Infrastructure as Code (via Docker)
-- **Docker**: Conteneurisation et orchestration
-
-### Streaming
-- **Apache Spark**: Traitement de données en streaming
-- **Delta Lake**: Stockage de données avec transactions ACID
-- **Kafka**: Messagerie en streaming
-- **Python**: Langage de programmation principal
-
-## 📝 Prochaines Étapes
-
-### Structure du Projet
-1. ✅ Analyser la structure actuelle
-2. ⏳ Exécuter la migration vers la structure optimisée
-3. ⏳ Mettre à jour les chemins dans les scripts
-4. ⏳ Créer les modules utilitaires (spark_config, schemas)
-5. ⏳ Tester et valider la nouvelle structure
-
-### Infrastructure
-1. ✅ Configuration Terraform via Docker
-2. ⏳ Configurer les providers (AWS, Azure, etc.)
-3. ⏳ Définir les ressources d'infrastructure
-4. ⏳ Configurer le backend pour le state
-5. ⏳ Documenter les variables et outputs
-
-## 🤝 Contribution
-
-Pour contribuer au projet:
-1. Consulter les documents d'analyse
-2. Suivre le plan de migration
-3. Tester les modifications
-4. Mettre à jour la documentation
-
-## 📄 Licence
-
-[À définir]
+### Général
+- [Extensions IDE Terraform](./docs/terraform/IDE_EXTENSIONS.md)
 
 ---
 
-*Dernière mise à jour: Analyse de structure initiale*
+## 🚀 Démarrage Rapide
 
+### Pour le Brief Azure
+
+```bash
+# WSL
+cd Brief
+./scripts/wsl/terraform-init.sh
+./scripts/wsl/terraform-plan.sh
+```
+
+```powershell
+# PowerShell
+cd Brief
+.\scripts\powershell\terraform-init.ps1
+.\scripts\powershell\terraform-plan.ps1
+```
+
+### Pour les Exercices
+
+```bash
+# WSL
+cd Exercices/exercice_1
+./run.sh init
+./run.sh apply
+```
+
+---
+
+## 🔧 Technologies Utilisées
+
+- **Terraform** - Infrastructure as Code
+- **Docker** - Conteneurisation
+- **Azure** - Cloud provider (Brief)
+- **Apache Spark** - Streaming (SmartTech)
+- **Delta Lake** - Stockage de données
+- **Kafka** - Messagerie en streaming
+
+---
+
+## 📝 Notes
+
+- Les projets **Brief** et **Exercices** sont indépendants
+- Chaque projet a son propre conteneur Docker
+- Les scripts sont disponibles en versions WSL (bash) et PowerShell
+
+---
+
+*Projet organisé pour l'apprentissage et le déploiement avec Terraform*

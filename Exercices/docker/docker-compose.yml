@@ -1,0 +1,25 @@
+# Docker Compose pour le conteneur Terraform des Exercices
+version: '3.8'
+
+services:
+  terraform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: terraform-exercices:latest
+    container_name: terraform-exercices
+    volumes:
+      - ../:/workspace
+      - terraform-plugins-exercices:/root/.terraform.d/plugins
+      - terraform-cache-exercices:/root/.terraform.d
+    working_dir: /workspace
+    environment:
+      - TF_IN_AUTOMATION=false
+      - TF_INPUT=true
+    stdin_open: true
+    tty: true
+    command: terraform version
+
+volumes:
+  terraform-plugins-exercices:
+  terraform-cache-exercices:
