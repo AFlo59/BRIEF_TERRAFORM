@@ -26,25 +26,50 @@ if ! docker images terraform-brief:latest --format "{{.Repository}}:{{.Tag}}" | 
     exit 1
 fi
 
+# Détecter le dossier .azure pour les credentials Azure CLI
+AZURE_DIR=""
+if [ -L ~/.azure ]; then
+    AZURE_DIR=$(readlink -f ~/.azure)
+elif [ -d ~/.azure ]; then
+    AZURE_DIR=~/.azure
+elif [ -d /mnt/c/Users/*/.azure ]; then
+    AZURE_DIR=$(ls -d /mnt/c/Users/*/.azure 2>/dev/null | head -1)
+fi
+
 # Si aucune commande n'est fournie, lancer un shell interactif
 if [ $# -eq 0 ]; then
     echo -e "${CYAN}🐳 Lancement du conteneur Docker en mode interactif...${NC}"
     echo -e "${YELLOW}💡 Vous êtes maintenant dans le conteneur. Tapez 'exit' pour quitter.${NC}"
     echo ""
-    docker run --rm -it \
-        -v "$BRIEF_DIR:/workspace" \
+
+    DOCKER_CMD="docker run --rm -it \
+        --entrypoint /bin/bash \
+        -v \"$BRIEF_DIR:/workspace\" \
         -v terraform-plugins:/root/.terraform.d/plugins \
-        -v terraform-cache:/root/.terraform.d \
-        -w /workspace \
-        terraform-brief:latest \
-        bash
+        -v terraform-cache:/root/.terraform.d"
+
+    if [ -n "$AZURE_DIR" ] && ([ -d "$AZURE_DIR" ] || [ -L "$AZURE_DIR" ]); then
+        DOCKER_CMD="$DOCKER_CMD -v \"$AZURE_DIR:/root/.azure:ro\""
+    fi
+
+    DOCKER_CMD="$DOCKER_CMD -w /workspace \
+        terraform-brief:latest"
+
+    eval $DOCKER_CMD
 else
-    # Exécuter la commande fournie
-    docker run --rm -it \
-        -v "$BRIEF_DIR:/workspace" \
+    # Exécuter la commande fournie (avec terraform en préfixe si nécessaire)
+    DOCKER_CMD="docker run --rm -it \
+        -v \"$BRIEF_DIR:/workspace\" \
         -v terraform-plugins:/root/.terraform.d/plugins \
-        -v terraform-cache:/root/.terraform.d \
-        -w /workspace \
+        -v terraform-cache:/root/.terraform.d"
+
+    if [ -n "$AZURE_DIR" ] && ([ -d "$AZURE_DIR" ] || [ -L "$AZURE_DIR" ]); then
+        DOCKER_CMD="$DOCKER_CMD -v \"$AZURE_DIR:/root/.azure:ro\""
+    fi
+
+    DOCKER_CMD="$DOCKER_CMD -w /workspace \
         terraform-brief:latest \
-        "$@"
+        \"$@\""
+
+    eval $DOCKER_CMD
 fi

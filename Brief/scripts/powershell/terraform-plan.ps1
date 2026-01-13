@@ -23,14 +23,31 @@ if (-not $imageExists) {
 
 Write-Host "📋 Génération du plan Terraform..." -ForegroundColor Cyan
 
+# Charger les helpers
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+. "$ScriptDir\_helpers.ps1"
+
+# Détecter le dossier .azure pour les credentials Azure CLI
+$azureVolume = Get-AzureVolumeMount
+
 $workspacePath = (Resolve-Path $BriefDir).Path
 
-docker run --rm -it `
-    -v "${workspacePath}:/workspace" `
-    -v terraform-plugins:/root/.terraform.d/plugins `
-    -v terraform-cache:/root/.terraform.d `
-    -w /workspace `
-    terraform-brief:latest plan
+# Construire la commande Docker
+$dockerCmd = "docker run --rm -it `"
+    -v `"${workspacePath}:/workspace`" `"
+    -v terraform-plugins:/root/.terraform.d/plugins `"
+    -v terraform-cache:/root/.terraform.d"
+
+# Ajouter le montage Azure si disponible
+if ($azureVolume) {
+    $dockerCmd += " $azureVolume"
+}
+
+$dockerCmd += " `"
+    -w /workspace `"
+    terraform-brief:latest plan"
+
+Invoke-Expression $dockerCmd
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Plan généré avec succès" -ForegroundColor Green

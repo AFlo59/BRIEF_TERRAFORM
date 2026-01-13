@@ -59,22 +59,25 @@ Scripts pour gérer le conteneur Docker Terraform du Brief.
 ```bash
 # WSL - Lance un shell bash dans le conteneur
 ./scripts/docker/docker-run.sh
+# Vous êtes maintenant dans le conteneur, vous pouvez exécuter :
+#   terraform version
+#   terraform init
+#   terraform plan
+#   az --version
+#   exit  (pour quitter)
 
-# WSL - Exécuter une commande spécifique
-./scripts/docker/docker-run.sh terraform version
-./scripts/docker/docker-run.sh az --version
-
-# PowerShell - Lance un shell bash dans le conteneur
-.\scripts\docker\docker-run.ps1
-
-# PowerShell - Exécuter une commande spécifique
-.\scripts\docker\docker-run.ps1 terraform version
+# WSL - Exécuter une commande Terraform spécifique
+./scripts/docker/docker-run.sh version
+./scripts/docker/docker-run.sh init
 ```
 
-**Note** : Pour les commandes Terraform, utilisez plutôt les scripts dédiés :
-- `./scripts/wsl/terraform-init.sh`
-- `./scripts/wsl/terraform-plan.sh`
-- `./scripts/wsl/terraform-apply.sh`
+**⚠️ Important** :
+- `docker-run.sh` lance un **shell interactif** dans le conteneur (comme `docker run -it --entrypoint /bin/bash`)
+- Ce n'est **PAS** `docker-compose up` (on utilise `docker run` directement)
+- Pour les commandes Terraform standard, utilisez plutôt les scripts dédiés :
+  - `./scripts/wsl/terraform-init.sh`
+  - `./scripts/wsl/terraform-plan.sh`
+  - `./scripts/wsl/terraform-apply.sh`
 
 ### Supprimer l'image
 
@@ -103,23 +106,38 @@ Scripts pour gérer le conteneur Docker Terraform du Brief.
 
 ## ⚙️ Notes
 
-- **docker-run.sh** lance le conteneur en mode interactif (shell bash)
-- **Pour les commandes Terraform**, utilisez les scripts dédiés dans `wsl/` ou `powershell/`
+- **docker-build.sh** : Construit l'image Docker (une seule fois au début)
+- **docker-run.sh** : Lance le conteneur en mode interactif (shell bash) - utile pour explorer ou tester manuellement
+- **Pour les commandes Terraform** : Utilisez les scripts dédiés dans `wsl/` ou `powershell/`
 - Les scripts Terraform construisent automatiquement l'image si elle n'existe pas
 - L'image est partagée entre tous les scripts Terraform
 - Les volumes Docker sont persistants (`terraform-plugins`, `terraform-cache`)
 
 ---
 
-## 🎯 Différence avec les Scripts Terraform
+## 🎯 Différence entre les Scripts
 
-| Script | Rôle |
-|-------|------|
-| `docker-run.sh` | Lance le conteneur interactif (shell bash) |
-| `terraform-init.sh` | Exécute `terraform init` via Docker |
-| `terraform-plan.sh` | Exécute `terraform plan` via Docker |
+| Script | Rôle | Quand l'utiliser |
+|-------|------|-----------------|
+| `docker-build.sh` | Construit l'image Docker | Une seule fois au début |
+| `docker-run.sh` | Lance un shell interactif dans le conteneur | Pour explorer/test manuel |
+| `terraform-init.sh` | Exécute `terraform init` via Docker | Pour initialiser Terraform |
+| `terraform-plan.sh` | Exécute `terraform plan` via Docker | Pour voir les changements |
+| `terraform-apply.sh` | Exécute `terraform apply` via Docker | Pour appliquer les changements |
 
-**Recommandation** : Utilisez les scripts `terraform-*.sh` pour les commandes Terraform standard.
+**Recommandation** :
+- Utilisez les scripts `terraform-*.sh` pour les commandes Terraform standard (99% du temps)
+- Utilisez `docker-run.sh` seulement si vous voulez un shell interactif pour explorer/test manuel
+
+---
+
+## ❓ Pourquoi pas docker-compose ?
+
+On utilise `docker run` directement au lieu de `docker-compose` car :
+- Plus simple pour des commandes ponctuelles
+- Pas besoin de maintenir un fichier `docker-compose.yml` complexe
+- Chaque script Terraform peut être exécuté indépendamment
+- Les volumes sont gérés automatiquement par Docker
 
 ---
 

@@ -32,14 +32,14 @@ if [ $# -eq 0 ]; then
     echo -e "${YELLOW}💡 Vous êtes maintenant dans le conteneur. Tapez 'exit' pour quitter.${NC}"
     echo ""
     docker run --rm -it \
+        --entrypoint /bin/bash \
         -v "$EXERCICES_DIR:/workspace" \
         -v terraform-plugins-exercices:/root/.terraform.d/plugins \
         -v terraform-cache-exercices:/root/.terraform.d \
         -w /workspace \
-        terraform-exercices:latest \
-        bash
+        terraform-exercices:latest
 else
-    # Exécuter la commande fournie
+    # Exécuter la commande fournie (avec terraform en préfixe si nécessaire)
     docker run --rm -it \
         -v "$EXERCICES_DIR:/workspace" \
         -v terraform-plugins-exercices:/root/.terraform.d/plugins \

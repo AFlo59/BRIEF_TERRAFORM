@@ -30,14 +30,14 @@ if ($args.Count -eq 0) {
     Write-Host "💡 Vous êtes maintenant dans le conteneur. Tapez 'exit' pour quitter." -ForegroundColor Yellow
     Write-Host ""
     docker run --rm -it `
+        --entrypoint /bin/bash `
         -v "${workspacePath}:/workspace" `
         -v terraform-plugins:/root/.terraform.d/plugins `
         -v terraform-cache:/root/.terraform.d `
         -w /workspace `
-        terraform-brief:latest `
-        bash
+        terraform-brief:latest
 } else {
-    # Exécuter la commande fournie
+    # Exécuter la commande fournie (avec terraform en préfixe si nécessaire)
     docker run --rm -it `
         -v "${workspacePath}:/workspace" `
         -v terraform-plugins:/root/.terraform.d/plugins `
